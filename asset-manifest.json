@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/Photo-Album/static/css/main.9cda0827.css",
-    "main.js": "/Photo-Album/static/js/main.5a1876b7.js",
-    "static/media/texture.jpg": "/Photo-Album/static/media/texture.cd9c857aa12360099636.jpg",
-    "static/media/Tomatoes-O8L8.ttf": "/Photo-Album/static/media/Tomatoes-O8L8.92ae010d8bbe4fc7b338.ttf",
-    "index.html": "/Photo-Album/index.html",
-    "main.9cda0827.css.map": "/Photo-Album/static/css/main.9cda0827.css.map",
-    "main.5a1876b7.js.map": "/Photo-Album/static/js/main.5a1876b7.js.map"
+    "main.css": "/static/css/main.a6e7f796.css",
+    "main.js": "/static/js/main.91f1c68a.js",
+    "static/media/texture.jpg": "/static/media/texture.cd9c857aa12360099636.jpg",
+    "static/media/Tomatoes-O8L8.ttf": "/static/media/Tomatoes-O8L8.92ae010d8bbe4fc7b338.ttf",
+    "index.html": "/index.html",
+    "main.a6e7f796.css.map": "/static/css/main.a6e7f796.css.map",
+    "main.91f1c68a.js.map": "/static/js/main.91f1c68a.js.map"
   },
   "entrypoints": [
-    "static/css/main.9cda0827.css",
-    "static/js/main.5a1876b7.js"
+    "static/css/main.a6e7f796.css",
+    "static/js/main.91f1c68a.js"
   ]
 }
