@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import "../App.css";
 import heic2any from "heic2any";
-const AddPhotosModal = ({ onCancel, onAdd }) => {
+
+const AddPhotosModal = ({ onCancel, onAdd, uploadProgress }) => {
   const [items, setItems] = useState([]);
 
   const handleFileChange = async (e) => {
@@ -67,39 +68,78 @@ const AddPhotosModal = ({ onCancel, onAdd }) => {
   return (
     <div className="modal-backdrop">
       <div className="modal">
-        <h2>Add Photos</h2>
-        <form onSubmit={handleSubmit}>
-          <label>Select Images:</label>
-          <input
-            type="file"
-            accept="image/*,video/*"
-            multiple
-            onChange={handleFileChange}
-            required
-          />
-
-          {items.map((item, idx) => (
-            <div key={idx} style={{ marginTop: "1rem" }}>
-              <label>Title:</label>
-              <input
-                type="text"
-                value=" "
-                onChange={(e) => updateField(idx, "title", e.target.value)}
+        {uploadProgress.total > 0 && (
+          <div style={{ marginBottom: "1rem" }}>
+            <div
+              style={{
+                height: "8px",
+                background: "#eee",
+                borderRadius: "4px",
+                overflow: "hidden",
+              }}
+            >
+              <div
+                style={{
+                  width: `${
+                    (uploadProgress.current / uploadProgress.total) * 100
+                  }%`,
+                  height: "100%",
+                  background: "#19b0a9",
+                  transition: "width 0.3s ease",
+                }}
               />
             </div>
-          ))}
-
-          <div style={{ marginTop: "1.5rem", textAlign: "right" }}>
-            <button
-              type="button"
-              onClick={onCancel}
-              style={{ marginRight: "0.5rem", background: "#ccc" }}
+            <small
+              style={{
+                display: "block",
+                textAlign: "center",
+                marginTop: "0.25rem",
+              }}
             >
-              Cancel
-            </button>
-            <button type="submit">Add</button>
+              {`Uploading ${uploadProgress.current ?? 0} / ${
+                uploadProgress.total ?? 0
+              }`}
+            </small>
           </div>
-        </form>
+        )}
+
+        {uploadProgress.total === 0 && (
+          <div>
+            <h2>Add Photos</h2>
+            <form onSubmit={handleSubmit}>
+              <label>Select Images:</label>
+              <input
+                type="file"
+                accept="image/*,video/*"
+                multiple
+                onChange={handleFileChange}
+                required
+              />
+
+              {items.map((item, idx) => (
+                <div key={idx} style={{ marginTop: "1rem" }}>
+                  <label>Title:</label>
+                  <input
+                    type="text"
+                    value=" "
+                    onChange={(e) => updateField(idx, "title", e.target.value)}
+                  />
+                </div>
+              ))}
+
+              <div style={{ marginTop: "1.5rem", textAlign: "right" }}>
+                <button
+                  type="button"
+                  onClick={onCancel}
+                  style={{ marginRight: "0.5rem", background: "#ccc" }}
+                >
+                  Cancel
+                </button>
+                <button type="submit">Add</button>
+              </div>
+            </form>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -1,10 +1,10 @@
 // src/pages/AlbumPage.js
-import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import React, { useState, useEffect, useRef } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { subscribePhotos, addPhotos, deletePhoto } from "../firebase";
 import PolaroidCard from "../components/PolaroidCard";
 import AddPhotosModal from "../components/AddPhotosModal";
-import { Camera, Download, Trash2 } from "lucide-react";
+import { Camera, Download, Trash2, ArrowLeft } from "lucide-react";
 
 const randomInRange = (min, max) => {
   return Math.random() * (max - min) + min;
@@ -22,11 +22,16 @@ const shuffleArray = (arr) => {
 
 const AlbumPage = () => {
   const { name } = useParams();
+  const navigate = useNavigate();
   const albumName = decodeURIComponent(name);
   const [photos, setPhotos] = useState([]);
   const [showAddModal, setShowAddModal] = useState(false);
   const [activePhoto, setActivePhoto] = useState(null);
-
+  const [uploadProgress, setUploadProgress] = useState({
+    current: 0,
+    total: 0,
+  });
+  const touchStartX = useRef(null);
   useEffect(() => {
     const unsubscribe = subscribePhotos(albumName, (list) => {
       // shuffle as soon as we get the list
@@ -36,24 +41,47 @@ const AlbumPage = () => {
   }, [albumName]);
 
   const handleAdd = async (photoItems) => {
+    setUploadProgress({ current: 0, total: photoItems.length });
+
     try {
-      await addPhotos(albumName, photoItems);
+      await addPhotos(albumName, photoItems, (current, total) => {
+        setUploadProgress({ current, total });
+      });
     } catch (err) {
       console.error("Error adding photos:", err);
     } finally {
       setShowAddModal(false);
+      setUploadProgress({ current: 0, total: 0 });
     }
   };
 
   const handleViewerClose = () => setActivePhoto(null);
 
-  return (
-    <div className="album-page">
-      <header className="album-header">
-        <h1>{albumName}</h1>
-      </header>
+  const onTouchStart = (e) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+  const onTouchEnd = (e) => {
+    const dx = e.changedTouches[0].clientX - touchStartX.current;
+    if (dx > 100) {
+      // swiped right
+      navigate("/albums");
+    }
+  };
 
-      <div className="grid">
+  return (
+    <div className="album-page" onTouchStart={onTouchStart}
+      onTouchEnd={onTouchEnd}>
+      <header className="album-header">
+        <button
+          onClick={() => navigate("/albums")}
+          className="back-btn"
+          aria-label="Back to albums"
+        >
+          <ArrowLeft size={24} />
+        </button>
+        <h1 className="album-title">{albumName}</h1>
+      </header>
+      <div className="gridA">
         {photos.map((photo) => {
           // compute random transforms once per render
           const x = randomInRange(-15, 15);
@@ -67,7 +95,7 @@ const AlbumPage = () => {
 
           return (
             // <div key={photo.id} className="item" style={style}>
-            <div key={photo.id} className="item" > 
+            <div key={photo.id} className="item">
               <div onClick={() => setActivePhoto(photo)}>
                 <PolaroidCard
                   url={photo.url}
@@ -83,9 +111,14 @@ const AlbumPage = () => {
       <div className="plus-btn" onClick={() => setShowAddModal(true)}>
         <Camera size={32} />
       </div>
+      
 
       {showAddModal && (
-        <AddPhotosModal onCancel={() => setShowAddModal(false)} onAdd={handleAdd} />
+        <AddPhotosModal
+         onCancel={() => setShowAddModal(false)}
+         onAdd={handleAdd}
+         uploadProgress={uploadProgress}
+       />
       )}
 
       {activePhoto && (

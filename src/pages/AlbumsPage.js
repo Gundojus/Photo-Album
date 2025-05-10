@@ -6,6 +6,10 @@ import PolaroidCard from "../components/PolaroidCard";
 import AddAlbumModal from "../components/AddAlbumModal";
 import { Camera } from "lucide-react";
 
+const randomInRange = (min, max) => {
+  return Math.random() * (max - min) + min;
+};
+
 const AlbumsPage = () => {
   const [albums, setAlbums] = useState([]);
   const [showModal, setShowModal] = useState(false);
@@ -35,16 +39,29 @@ const AlbumsPage = () => {
         <h1>Photo Album</h1>
       </header>
       <div className="grid">
-        {albums.map((album) => (
-          <Link
+        {albums.map((album) => {
+          let x = randomInRange(-10, 10);
+          let y = randomInRange(-15, 15);
+          let r = randomInRange(-5, 5);
+          let s = randomInRange(0.85, 1.15);
+
+          x = randomInRange(-10, 10);
+          y = randomInRange(-15, 15);
+          r = randomInRange(-5, 5);
+          s = randomInRange(1, 1.15);
+
+          const style = {
+            transform: `translate(${x}px, ${y}px) rotate(${r}deg) scale(${s})`,
+          };
+         return ( <Link
             key={album.name}
             to={`/album/${encodeURIComponent(album.name)}`}
           >
-            <div className="item">
+            <div className="item" style={style}>
               <PolaroidCard url={album.coverUrl} caption={album.name} type="image/" />
             </div>
-          </Link>
-        ))}
+          </Link>)
+})}
       </div>
 
       {/* Floating Add Album button */}

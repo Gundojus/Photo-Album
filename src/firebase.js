@@ -45,32 +45,41 @@ export const subscribePhotos = (albumName, callback) => {
   });
 };
 
-// src/firebase.js (updated)
+// src/firebase.js
 
-export const addPhotos = async (albumName, items) => {
-  // items: [{ file: File, title: string, backText: string }, …]
+export const addPhotos = async (albumName, items, onProgress) => {
+  let completed = 0;
+  const total = items.length;
+
   const uploads = items.map(async ({ file, title, backText }) => {
-    // upload to storage
     const photoRef = storageRef(storage, `albums/${albumName}/${file.name}`);
+
     await uploadBytes(photoRef, file);
     const url = await getDownloadURL(photoRef);
 
-    // push to realtime database
     const meta = {
       url,
       title,
       backText,
-      contentType: file.type,
       createdAt: Date.now(),
       storagePath: photoRef.fullPath,
+      contentType: file.type || "image/jpeg",
     };
+
     const photosDbRef = dbRef(database, `photos/${albumName}`);
     const newEntry = push(photosDbRef);
     await set(newEntry, meta);
+
+    // Update progress
+    completed++;
+    if (onProgress) {
+      onProgress(completed, total);
+    }
   });
 
   await Promise.all(uploads);
 };
+
 
 export const deletePhoto = async (albumName, photo) => {
   // photo: { id, storagePath }
