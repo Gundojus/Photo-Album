@@ -1,0 +1,264 @@
+/* App.css */
+
+.app {
+  overflow-x: hidden;
+}
+
+@font-face {
+  font-family: 'Tomatoes';
+  src: url('./font/Tomatoes-O8L8.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* Global resets and layout */
+html, body, #root, .app {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: 'Tomatoes', Arial, sans-serif;
+  /* Tiled background that loops and fills width */
+  background-image: url("./imgs/texture.jpg");
+  background-repeat: repeat;
+  background-position: top left;
+  background-size: auto;
+  color: #333;
+}
+
+/* Navigation bar */
+.nav {
+  width: 100%;
+  padding: 1rem 2rem;
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.nav a {
+  text-decoration: none;
+  color: #007bff;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+/* Responsive grid for albums/photos */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-gap: 1.5rem;
+  padding: 2rem;
+  justify-items: center;
+  align-items: start;
+}
+
+/* Remove underlines from album links and inherit text color */
+.grid a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Polaroid card container */
+.item {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  transition: all 0.35s ease-in-out;
+  filter: grayscale(10%);
+  /* Default skew & vertical offset */
+  transform: rotate(-3deg) translateY(10px);
+}
+.item:hover {
+  filter: grayscale(0);
+  transform: scale(1.05) rotate(0deg) translateY(0);
+}
+
+/* Random skew & offset variations for natural look */
+.item:nth-child(2n) {
+  transform: rotate(3deg) translateY(-10px);
+}
+.item:nth-child(3n) {
+  transform: rotate(5deg) translateY(15px);
+}
+.item:nth-child(4n) {
+  transform: rotate(-5deg) translateY(-15px);
+}
+
+/* Polaroid styling */
+.polaroid {
+  background: #fff;
+  padding: 1rem 1rem 2.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
+  width: 100%;
+  box-sizing: border-box;
+}
+.polaroid img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 2px;
+}
+.caption {
+  margin: 1.75rem 0 -0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.3;
+  text-align: center;
+  color: #444;
+}
+
+/* Plus button (floating action) */
+.plus-btn {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  background: #000;
+  color: #fff;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease;
+}
+.plus-btn:hover {
+  transform: scale(1.1);
+}
+
+/* Modal backdrop and container */
+/* Modal backdrop: allow vertical scrolling if content is taller than viewport */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  /* keep the backdrop centered when small, but scroll when tall */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;        /* give breathing room */
+  background: rgba(0, 0, 0, 0.5);
+  overflow-y: auto;     /* enable scrolling */
+  z-index: 100;
+}
+
+/* Modal container: limit height and scroll its own content */
+.modal {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 8px;
+  width: 400px;
+  max-width: 90%;
+  
+  /* cap the modal height and scroll internally */
+  max-height: calc(100vh - 2rem);
+  overflow-y: auto;
+  
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.modal h2 {
+  margin-top: 0;
+  font-size: 1.5rem;
+  color: #222;
+  font-family: 'Handlee', cursive;
+}
+.modal label {
+  display: block;
+  margin: 1rem 0 0.5rem;
+  font-weight: 500;
+  font-family: 'Handlee', cursive;
+}
+.modal input[type="text"],
+.modal input[type="file"],
+.modal textarea {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+.modal textarea {
+  resize: vertical;
+  min-height: 80px;
+  font-family: 'Handlee', cursive;
+}
+.modal button {
+  margin-top: 1.5rem;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 4px;
+  background: #19b0a9;
+  color: #fff;
+  font-size: 1rem;
+  font-family: 'Handlee', cursive;
+  cursor: pointer;
+}
+.modal button:hover {
+  background: #19b0a9;
+}
+
+/* Photo viewer overlay */
+.viewer-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+}
+.viewer-content {
+  max-width: 90vw;
+  height: 90vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.viewer-content img {
+  height: 90vh;
+  width: auto;
+  object-fit: contain;
+  border-radius: 4px;
+}
+.viewer-actions {
+  position: absolute;
+  bottom: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 1rem;
+}
+.viewer-actions button {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.9);
+  cursor: pointer;
+  font-weight: bold;
+}
+.viewer-actions button:hover {
+  background: rgba(255, 255, 255, 1);
+}
+
+/* Album title header */
+.album-header {
+  text-align: center;
+  margin: 2rem 0 1rem;
+}
+.album-header h1 {
+  font-family: 'Tomatoes', serif;
+  font-size: 2.5rem;
+  margin: 0;
+  color: #222;
+}

@@ -1,0 +1,19 @@
+Project: Photo Albums React App
+Structure:
+  public/
+    index.html
+    imgs/texture.jpg
+  src/
+    firebaseConfig.js
+    firebase.js
+    index.js
+    App.js
+    App.css
+    components/
+      PolaroidCard.js
+      AddAlbumModal.js
+      AddPhotosModal.js
+      ImageViewer.js
+    pages/
+      AlbumsPage.js
+      AlbumPage.js
