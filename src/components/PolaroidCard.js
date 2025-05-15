@@ -27,10 +27,11 @@ export default function PolaroidCard({ url, caption, type }) {
           autoPlay
           loop
           playsInline
+          loading="lazy"
           style={{ width: "100%", height: "auto", borderRadius: "2px" }}
         />
       ) : (
-        <img src={url} alt={caption} />
+        <img src={url} alt={caption} loading="lazy"/>
       )}
       {caption && <div className="caption">{caption}</div>}
     </div>

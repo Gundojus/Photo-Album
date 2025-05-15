@@ -33,12 +33,53 @@ const AlbumPage = () => {
   });
   const touchStartX = useRef(null);
   useEffect(() => {
-    const unsubscribe = subscribePhotos(albumName, (list) => {
-      // shuffle as soon as we get the list
-      setPhotos(shuffleArray(list));
-    });
-    return () => unsubscribe();
+    const key = `cached_photos_${albumName}`;
+    const cached = sessionStorage.getItem(key);
+    if (cached) {
+      try {
+        const parsed = JSON.parse(cached);
+        setPhotos(parsed);
+      } catch (_) {
+        sessionStorage.removeItem(key);
+      }
+    }
   }, [albumName]);
+  useEffect(() => {
+    const key = `cached_photos_${albumName}`;
+  let intervalId;
+
+  const unsubscribe = subscribePhotos(albumName, (list) => {
+    if (intervalId) clearInterval(intervalId);
+    const sortedList = shuffleArray(list);
+    setPhotos([]);
+
+    let i = 0;
+    intervalId = setInterval(() => {
+      if (i < sortedList.length) {
+        const next = sortedList[i];
+        if (next && next.url) {      // extra safety check
+          setPhotos((prev) => [...prev, next]);
+        }
+        i++;
+      } else {
+        clearInterval(intervalId);
+      }
+    }, 50);
+     try {
+        sessionStorage.setItem(key, JSON.stringify(list));
+      } catch (e) {
+        console.warn("Failed to cache photos:", e);
+      }
+  });
+
+  return () => {
+    unsubscribe();
+    if (intervalId) clearInterval(intervalId);
+  };
+}, [albumName]);
+
+
+
 
   const handleAdd = async (photoItems) => {
     setUploadProgress({ current: 0, total: photoItems.length });
